@@ -1,0 +1,18 @@
+<!-- Lg Screen -->
+<div class="flex">
+  <div class="hidden md:block md:w-1/2">
+    <img src="/assets/login-image.jpg" alt="" class="w-full h-screen" />
+  </div>
+  <div class="w-full md:w-1/2 p-8">
+    <div class="flex flex-col gap-8">
+      <div
+        class="flex items-center gap-2 font-bold text-black/90 text-2xl hover:cursor-pointer"
+        (click)="navigateHome()"
+      >
+        <mat-icon>flight_takeoff</mat-icon>
+        <div class="">Aviation Service Providers Safety Oversight System</div>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<div class="w-full flex flex-col gap-4">
+  <h1 class="font-extrabold">Issues</h1>
+
+  <div class="w-full flex flex-col md:flex-row justify-between md:items-center">
+    <div class="w-full md:w-72">
+      <app-search (search)="onSearch($event)"></app-search>
+    </div>
+    <div class="flex justify-end md:items-center gap-4">
+      <button
+        mat-raised-button
+        color="primary"
+        class="lg:w-48"
+        *ngIf="!appService.isInspector()"
+        (click)="downloadReport()"
+      >
+        <mat-icon>download</mat-icon>
+        Download Report
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-3 w-full" *ngIf="!isLoading">
+    <div class="flex justify-between items-center">
+      <div>
+        <span class="font-medium">Total: </span>{{ allIssues }} Issue(s)
+      </div>
+      <form
+        [formGroup]="filterFormGroup"
+        (ngSubmit)="updateFilters()"
+        class="mt-4 flex items-center gap-3"
+      >
+        <mat-form-field class="w-full">
+          <mat-label>Filter by status:</mat-label>
+          <mat-select
+            formControlName="status"
+            required
+            (selectionChange)="updateFilters()"
+          >
+            <mat-option *ngFor="let status of statuses" [value]="status.value">
+              {{ status.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="filterFormGroup.get('status')?.hasError('required')"
+          >
+            *This field is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Filter by entity:</mat-label>
+          <mat-select
+            formControlName="entity"
+            required
+            (selectionChange)="updateFilters()"
+          >
+            <mat-option *ngFor="let entity of entities" [value]="entity.value">
+              {{ entity.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="filterFormGroup.get('entity')?.hasError('required')"
+          >
+            *This field is required
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </div>
+    <app-issues-table
+      *ngIf="issues.length > 0; else noissues"
+      [issues]="issues"
+      (issueUpdated)="fetchIssuesList(queryParams)"
+    ></app-issues-table>
+    <ng-template #noissues>
+      <div class="mt-8 text-center text-lg font-bold">
+        No issues have been scheduled
+      </div>
+    </ng-template>
+  </div>
+
+  <div *ngIf="isLoading">
+    <!-- Loading Skeleton Placeholder -->
+    <table class="skeleton-table">
+      <thead>
+        <tr class="text-center">
+          <th class="py-3 px-3 skeleton skeleton-text"></th>
+          <th class="py-3 px-3 skeleton skeleton-text"></th>
+          <th class="py-3 px-3 skeleton skeleton-text"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of [1, 2, 3, 4, 5]" class="text-center">
+          <td class="skeleton skeleton-row"></td>
+          <td class="skeleton skeleton-row"></td>
+          <td class="skeleton skeleton-row"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator
+    [length]="allIssues"
+    [pageSize]="pageSize"
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+</div>

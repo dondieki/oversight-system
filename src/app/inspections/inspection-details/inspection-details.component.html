@@ -1,0 +1,198 @@
+.
+<div class="w-full flex flex-col gap-8">
+  <div class="text-2xl font-medium">Inspection Details</div>
+
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a href="/#/inspections" class="text-blue-500 underline">Inspections</a>
+      >
+      <div>Details</div>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Basic Details">
+      <app-basic-details-loader *ngIf="isLoading"></app-basic-details-loader>
+      <div class="mt-4 shadow-lg bg-white p-8" *ngIf="!isLoading">
+        <div class="shadow-md py-4 px-3">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-3">
+              <div class="text-lg">Basic Details</div>
+              <hr />
+
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Deadline:</div>
+                <div>
+                  {{ inspection?._deadline | date }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Status:</div>
+                <div
+                  *ngIf="inspection.isComplete; else inComplete"
+                  class="rounded-full py-1 px-2 bg-green-500 text-white"
+                >
+                  COMPLETE
+                </div>
+                <ng-template #inComplete>
+                  <div class="rounded-full py-1 px-2 bg-yellow-500 text-white">
+                    PENDING
+                  </div>
+                </ng-template>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Created At:</div>
+                <div>
+                  {{ inspection?.createdAt | date }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Updated At:</div>
+                <div>
+                  {{ inspection?.updatedAt | date }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <div class="text-lg">Inspector Details</div>
+              <hr />
+
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Full Name:</div>
+                <div>
+                  {{ inspection?.inspectorId?.firstName }}
+                  {{ inspection?.inspectorId?.lastName }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Email:</div>
+                <div>
+                  {{ inspection?.inspectorId?.email }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Phone Number:</div>
+                <div>
+                  {{ inspection?.inspectorId?.phoneNumber }}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col gap-3"
+              *ngIf="inspection?.airportId; else airlineInfo"
+            >
+              <div class="text-lg">Airport Details</div>
+              <hr />
+
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Name:</div>
+                <div>
+                  {{ inspection?.airportId?.name }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Email:</div>
+                <div>
+                  {{ inspection?.airportId?.email }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Phone Number:</div>
+                <div>
+                  {{ inspection?.airportId?.phoneNumber }}
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <div class="font-medium">Location:</div>
+                <div>
+                  P.O BOX {{ inspection?.airportId?.postalAddress }},
+                  {{ inspection?.airportId?.physicalAddress }},
+                  {{ inspection?.airportId?.postalCode }},
+                </div>
+              </div>
+            </div>
+
+            <ng-template #airlineInfo>
+              <ng-container *ngIf="inspection?.airlineId; else ansStationInfo">
+                <div class="flex flex-col gap-3">
+                  <div class="text-lg">Airline Details</div>
+                  <hr />
+
+                  <div class="flex gap-2 items-center">
+                    <div class="font-medium">Name:</div>
+                    <div>
+                      {{ inspection?.airlineId.name | titlecase }}
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <div class="font-medium">Number Of Aircraft:</div>
+                    <div>
+                      {{ inspection?.airlineId?.numberOfAircraft }}
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <div class="font-medium">Total Passengers:</div>
+                    <div>
+                      {{ inspection?.airlineId?.totalPassengers }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-template>
+
+            <ng-template #ansStationInfo>
+              <ng-container
+                *ngIf="inspection?.ansStationId; else maintenanceOrgInfo"
+              >
+                <div class="flex flex-col gap-3">
+                  <div class="text-lg">ANS Station Details</div>
+                  <hr />
+
+                  <div class="flex gap-2 items-center">
+                    <div class="font-medium">Name:</div>
+                    <div>
+                      {{ inspection?.ansStationId.name | titlecase }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-template>
+
+            <ng-template #maintenanceOrgInfo>
+              <ng-container *ngIf="inspection?.maintenanceOrgId">
+                <div class="flex flex-col gap-3">
+                  <div class="text-lg">Maintenance Organization Details</div>
+                  <hr />
+
+                  <div class="flex gap-2 items-center">
+                    <div class="font-medium">Name:</div>
+                    <div>
+                      {{ inspection?.maintenanceOrgId.name | titlecase }}
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <div class="font-medium">Location:</div>
+                    <div>
+                      {{ inspection?.maintenanceOrgId?.location }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Initiate Inspection" *ngIf="!inspection?.isComplete">
+      <div *ngIf="selectedRecordId">
+        <app-initiate-inspection
+          [inspection]="inspection"
+          [inspectionId]="selectedRecordId"
+        ></app-initiate-inspection>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

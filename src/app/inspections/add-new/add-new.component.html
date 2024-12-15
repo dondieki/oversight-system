@@ -1,0 +1,273 @@
+<div class="border shadow-lg bg-white px-24 py-16 min-w-full w-full">
+  <div class="w-full text-cente font-bold text-xl">Schedule Inspection</div>
+
+  <mat-vertical-stepper
+    orientation="vertical"
+    [linear]="isLinear"
+    #stepper
+    class="mt-4"
+  >
+    <!-- Airport FormGroup -->
+    <mat-step [stepControl]="airportNameFormGroup">
+      <ng-template matStepLabel>Airport Information</ng-template>
+      <form [formGroup]="airportNameFormGroup" class="mt-4">
+        <div>
+          <div>Airport Name</div>
+          <select
+            name=""
+            id=""
+            class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+            formControlName="airportName"
+          >
+            <option *ngFor="let airport of airportsList" [value]="airport">
+              {{ airport.name }}
+            </option>
+          </select>
+        </div>
+        <div class="mt-8">
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="validateAirportInformation()"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Inspector Form Group -->
+    <mat-step [stepControl]="inspectorFormGroup">
+      <ng-template matStepLabel>Inspector Information</ng-template>
+      <form [formGroup]="inspectorFormGroup" class="mt-4">
+        <div class="grid grid-cols-3 gap-16">
+          <div>
+            <div>Full Name</div>
+            <input
+              type="text"
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              placeholder="Timothy Maina"
+              formControlName="name"
+            />
+          </div>
+          <div class="w-full">
+            <div>Email</div>
+            <input
+              type="email"
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              placeholder="timothymaina.@gmail.com"
+              formControlName="email"
+            />
+          </div>
+          <div class="w-full">
+            <div>Phone Number</div>
+            <input
+              type="text"
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              placeholder="+2547 *** ****"
+              formControlName="phoneNumber"
+            />
+          </div>
+        </div>
+        <div class="mt-8 flex gap-3">
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="goBack()"
+          >
+            Previous
+          </button>
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="validateInspectorInformation()"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Operations Manager Form Group -->
+    <mat-step [stepControl]="operationsManagerFormGroup">
+      <ng-template matStepLabel
+        >Operations Manager Present Information</ng-template
+      >
+      <form [formGroup]="operationsManagerFormGroup" class="mt-4">
+        <div class="grid grid-cols-3 gap-16">
+          <div>
+            <div>Full Name</div>
+            <input
+              type="text"
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              placeholder="James Kioko"
+              formControlName="name"
+            />
+          </div>
+          <div class="w-full">
+            <div>Email</div>
+            <input
+              type="email"
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              placeholder="kiokojames.jkiakenya@gmail.com"
+              formControlName="email"
+            />
+          </div>
+          <div class="w-full">
+            <div>Phone Number</div>
+            <input
+              type="text"
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              placeholder="+2547 *** ****"
+              formControlName="phoneNumber"
+            />
+          </div>
+        </div>
+        <div class="mt-8 flex gap-3">
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="goBack()"
+          >
+            Previous
+          </button>
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="validateORInformation()"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Questions -->
+    <mat-step [stepControl]="questionsFormGroup">
+      <ng-template matStepLabel>Runways Checkup Informations</ng-template>
+      <form [formGroup]="questionsFormGroup" class="mt-4">
+        <div class="grid grid-cols-3 gap-16">
+          <div>
+            <div>Are all runways in order?</div>
+            <select
+              name=""
+              id=""
+              class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+              formControlName="allRunwaysInOrder"
+            >
+              <option *ngFor="let val of booleanValues" [value]="val.value">
+                {{ val.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div
+          class="mt-8 flex gap-3"
+          *ngIf="questionsFormGroup.get('allRunwaysInOrder')?.value === 'No'"
+        >
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="goBack()"
+          >
+            Previous
+          </button>
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="validateQuestionsInformation()"
+          >
+            Next
+          </button>
+        </div>
+        <div
+          class="mt-8 flex gap-3"
+          *ngIf="questionsFormGroup.get('allRunwaysInOrder')?.value === 'Yes'"
+        >
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-green-700 text-white w-32"
+            (click)="submitInspection()"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Issues Form Group -->
+    <mat-step
+      [stepControl]="issuesFormGroup"
+      *ngIf="questionsFormGroup.get('allRunwaysInOrder')?.value === 'No'"
+    >
+      <ng-template matStepLabel>Noted Issued</ng-template>
+      <form [formGroup]="issuesFormGroup" class="mt-4">
+        <div class="w-full">
+          <div>Runway No.</div>
+          <input
+            type="text"
+            class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+            placeholder="12"
+            formControlName="runwayNumber"
+          />
+        </div>
+        <div class="w-full">
+          <div>Issue</div>
+          <textarea
+            class="px-3 py-2 w-full border rounded focus:outline-yellow-200"
+            placeholder="The runway has..."
+            formControlName="issue"
+          ></textarea>
+        </div>
+        <div>
+          <div class="w-full hover:cursor-pointer" (click)="submitIssue()">
+            <div>Add Issue</div>
+            <mat-icon class="font-bold text-green-700 mt-2 hover:cursor-pointer"
+              >add_circle_outline</mat-icon
+            >
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-3" *ngIf="savedIssues.length > 0">
+          <div *ngFor="let issue of savedIssues; let i = index">
+            <div class="shadow-lg px-4 py-2">
+              <div class="flex gap-3">
+                <div class="text-base font-medium">Number:</div>
+                <div>{{ issue.runwayNumber }}</div>
+              </div>
+              <div class="flex gap-3">
+                <div class="text-base font-medium">Issue:</div>
+                <div>{{ issue.issue | slice : 0 : 46 }}</div>
+              </div>
+              <div
+                class="flex gap-3 mt-3 hover:cursor-pointer"
+                (click)="removeIssue(i)"
+              >
+                <div class="text-base font-medium">Delete</div>
+                <div><mat-icon>delete</mat-icon></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 flex gap-3">
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-gray-700 text-white w-32"
+            (click)="goBack()"
+          >
+            Previous
+          </button>
+          <button
+            type="submit"
+            class="border rounded px-3 py-2 bg-green-700 text-white w-32"
+            (click)="submitInspection()"
+            *ngIf="!isLoading"
+          >
+            Submit
+          </button>
+          <button
+            class="border rounded px-3 py-2 bg-green-700 text-white w-32"
+            *ngIf="isLoading"
+          >
+            Loading...
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>

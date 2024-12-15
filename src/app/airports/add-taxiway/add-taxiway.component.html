@@ -1,0 +1,159 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Add Taxiway(s)</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="taxiwayFormGroup" class="mt-4 flex flex-col gap-4">
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>Taxiway Number</mat-label>
+            <input
+              matInput
+              placeholder="18"
+              formControlName="number"
+              required
+            />
+            <mat-error
+              *ngIf="taxiwayFormGroup.get('number')?.hasError('required')"
+            >
+              Taxiway Number is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>Width (m)</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="250"
+              formControlName="width"
+              required
+            />
+            <mat-error
+              *ngIf="taxiwayFormGroup.get('width')?.hasError('required')"
+            >
+              Width is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>Length (m)</mat-label>
+            <input
+              matInput
+              type="number"
+              placeholder="1500"
+              formControlName="length"
+              required
+            />
+            <mat-error
+              *ngIf="taxiwayFormGroup.get('length')?.hasError('required')"
+            >
+              Length is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>In Service</mat-label>
+            <mat-select formControlName="inService" required>
+              <mat-option
+                *ngFor="let val of booleanValues"
+                [value]="val.value"
+                >{{ val.name }}</mat-option
+              >
+            </mat-select>
+            <mat-error
+              *ngIf="taxiwayFormGroup.get('inService')?.hasError('required')"
+            >
+              In Service status is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field class="w-full">
+            <mat-label>Surface Type</mat-label>
+            <mat-select formControlName="surfaceType" required>
+              <mat-option
+                *ngFor="let surfaceType of surfaceTypes"
+                [value]="surfaceType"
+                >{{ surfaceType }}</mat-option
+              >
+            </mat-select>
+            <mat-error
+              *ngIf="taxiwayFormGroup.get('surfaceType')?.hasError('required')"
+            >
+              Surface Type is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <button mat-raised-button color="primary" (click)="submitTaxiway()">
+        <div>Save Taxiway</div>
+        <mat-icon class="font-bold">add_circle_outline</mat-icon>
+      </button>
+
+      <!-- Display saved taxiways -->
+      <div class="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-3" *ngIf="savedTaxiways.length > 0">
+        <div *ngFor="let taxiway of savedTaxiways; let i = index">
+          <div class="shadow-lg px-4 py-2">
+            <div class="flex gap-3">
+              <div class="text-base font-medium">Number:</div>
+              <div>{{ taxiway.number }}</div>
+            </div>
+            <div class="flex gap-3 mt-3">
+              <div class="text-base font-medium">Width:</div>
+              <div>{{ taxiway.width }}</div>
+            </div>
+            <div class="flex gap-3 mt-3">
+              <div class="text-base font-medium">Length:</div>
+              <div>{{ taxiway.length }}</div>
+            </div>
+            <div class="flex gap-3 mt-3">
+              <div class="text-base font-medium">Service Type:</div>
+              <div>{{ taxiway.surfaceType }}</div>
+            </div>
+            <div class="flex gap-3 mt-3">
+              <div class="text-base font-medium">In Service:</div>
+              <div *ngIf="taxiway.inService; else notInService">Yes</div>
+              <ng-template #notInService>No</ng-template>
+            </div>
+            <div
+              class="flex gap-3 mt-3 hover:cursor-pointer"
+              (click)="removeTaxiway(i)"
+            >
+              <div class="text-base font-medium">Delete</div>
+              <div><mat-icon>delete</mat-icon></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <hr />
+
+  <div class="flex justify-end items-center py-4">
+    <div class="flex items-center gap-4">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        *ngIf="!isLoading"
+        [disabled]="savedTaxiways.length < 1"
+        (click)="submitAllTaxiways()"
+      >
+        Submit All
+      </button>
+      <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+        Loading...
+      </button>
+      <button mat-raised-button mat-dialog-close>Close</button>
+    </div>
+  </div>
+</div>

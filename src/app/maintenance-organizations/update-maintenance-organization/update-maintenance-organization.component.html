@@ -1,0 +1,81 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Add Maintenance Organization</h1>
+
+  <div mat-dialog-content>
+    <form
+      [formGroup]="updateMaintenanceOrganizationFormGroup"
+      (ngSubmit)="addMaintenanceOrganization()"
+    >
+      <div class="w-full grid md:grid-cols-2 gap-4">
+        <!-- Name Field -->
+        <mat-form-field class="FirstName w-full">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required class="w-full" />
+          <mat-error
+            *ngIf="
+              updateMaintenanceOrganizationFormGroup
+                .get('name')
+                ?.hasError('required')
+            "
+          >
+            Name is required.
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Location Field -->
+        <mat-form-field class="LastName w-full">
+          <mat-label>Location</mat-label>
+          <input matInput formControlName="location" required class="w-full" />
+          <mat-error
+            *ngIf="
+              updateMaintenanceOrganizationFormGroup
+                .get('location')
+                ?.hasError('required')
+            "
+          >
+            Location is required.
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Aircraft Types (Select Dropdown) -->
+        <mat-form-field class="w-full">
+          <mat-label>Aircraft Types</mat-label>
+          <mat-select
+            formControlName="aircraftTypes"
+            multiple
+            aria-label="Select aircraft types"
+          >
+            <mat-option *ngFor="let type of strAircraftTypes" [value]="type">
+              {{ type }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="
+              updateMaintenanceOrganizationFormGroup
+                .get('aircraftTypes')
+                ?.hasError('required')
+            "
+          >
+            Aircraft type is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="addMaintenanceOrganization()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Submit
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

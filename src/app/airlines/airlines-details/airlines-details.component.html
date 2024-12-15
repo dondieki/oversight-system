@@ -1,0 +1,63 @@
+<div class="w-full flex flex-col gap-8">
+  <div class="text-2xl font-medium">Airline Information</div>
+
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a href="/#/airlines" class="text-blue-500 underline">Airline</a>
+      >
+      <div>Details</div>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Airline Details">
+      <div class="mt-4 shadow-lg bg-white p-8">
+        <div
+          class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between"
+        >
+          <div class="font-medium text-base">Basic Information</div>
+        </div>
+        <div class="border mt-4"></div>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Created On:</div>
+              <div class="text-sm">{{ airline?.createdAt | date }}</div>
+            </div>
+            <div class="flex gap-3 mt-4">
+              <div class="text-base font-medium">Name:</div>
+              <div class="text-sm">{{ airline?.name | titlecase }}</div>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Number Of Aircraft:</div>
+              <div class="text-sm">{{ airline?.numberOfAircraft }}</div>
+            </div>
+          </div>
+          <div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Total Passengers:</div>
+              <div class="text-sm">{{ airline?.totalPassengers }}</div>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Routes Flown:</div>
+              <div class="text-sm">
+                {{ airline?.routesFlown }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Inspections">
+      <app-inspections
+        [entity]="entity"
+        [entityId]="selectedAirlineId"
+      ></app-inspections>
+    </mat-tab>
+
+    <mat-tab label="Issues">
+      <app-issues [entity]="entity" [entityId]="selectedAirlineId"></app-issues>
+    </mat-tab>
+  </mat-tab-group>
+</div>

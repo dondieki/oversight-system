@@ -1,0 +1,17 @@
+table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.mat-header-cell {
+  background-color: #f3f4f6;
+  border-bottom: 2px solid #ddd;
+}
+
+.mat-cell {
+  border-bottom: 1px solid #ddd;
+}
+
+.mat-elevation-z8 {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}

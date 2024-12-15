@@ -1,0 +1,132 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Update User Information</h1>
+
+  <div mat-dialog-content>
+    <form [formGroup]="updateUserFormGroup" (ngSubmit)="updateUserInfo()">
+      <div class="w-full grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <mat-form-field class="Email w-full">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            placeholder="example@gmail.com"
+            formControlName="email"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateUserFormGroup.get('email')?.hasError('required')"
+          >
+            Email is required.
+          </mat-error>
+          <mat-error
+            *ngIf="updateUserFormGroup.get('email')?.hasError('email')"
+          >
+            Enter a valid email address.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="FirstName w-full">
+          <mat-label>First Name</mat-label>
+          <input
+            matInput
+            placeholder="John"
+            formControlName="firstName"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateUserFormGroup.get('firstName')?.hasError('required')"
+          >
+            First name is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="LastName w-full">
+          <mat-label>Last Name</mat-label>
+          <input
+            matInput
+            placeholder="Doe"
+            formControlName="lastName"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateUserFormGroup.get('lastName')?.hasError('required')"
+          >
+            Last name is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="PhoneNumber w-full">
+          <mat-label>Phone Number</mat-label>
+          <input
+            matInput
+            placeholder="+254714060467"
+            formControlName="phoneNumber"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateUserFormGroup.get('phoneNumber')?.hasError('required')"
+          >
+            Phone number is required.
+          </mat-error>
+          <mat-error
+            *ngIf="updateUserFormGroup.get('phoneNumber')?.hasError('pattern')"
+          >
+            Enter a valid phone number.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="IdNumber w-full">
+          <mat-label>ID Number</mat-label>
+          <input
+            matInput
+            placeholder="123456789"
+            formControlName="idNumber"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateUserFormGroup.get('idNumber')?.hasError('required')"
+          >
+            ID number is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="Role w-full">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option
+              *ngFor="let role of roles"
+              [value]="role"
+              class="capitalize"
+              >{{ role }}</mat-option
+            >
+          </mat-select>
+          <mat-error
+            *ngIf="updateUserFormGroup.get('role')?.hasError('required')"
+          >
+            Role is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="updateUserInfo()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Update
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="py-8 px-4">
+  <div mat-dialog>
+    <h1 mat-dialog-title>Update Issue Status</h1>
+
+    <div mat-dialog-content>
+      <p>Are you sure you want to mark this issue as resolved?</p>
+    </div>
+
+    <div mat-dialog-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="updateIssueInfo()"
+        type="submit"
+        *ngIf="!isLoading"
+      >
+        Yes
+      </button>
+      <button mat-raised-button color="warn" *ngIf="isLoading" disabled>
+        Loading...
+      </button>
+      <button mat-raised-button mat-dialog-close color="secondary">
+        Close
+      </button>
+    </div>
+  </div>
+</div>

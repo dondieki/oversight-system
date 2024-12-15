@@ -1,0 +1,16 @@
+ng generate module dashboard --route dashboard --module app.module
+ng g c dashboard/home --module=dashboard/dashboard
+
+
+ng generate module users --route users --module app.module
+
+ng generate module runways --route runways --module app.module
+
+
+ng generate module airports --route airports --module app.module
+
+
+ng generate module inspections --route inspections --module app.module
+
+ng generate module auth --route auth --module app.module
+ng g c auth/login --module=auth/auth

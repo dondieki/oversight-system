@@ -1,0 +1,32 @@
+<div
+  class="shadow-lg shadow-zinc-600 h-screen sticky top-0 w-72 py-8 px-8 flex flex-col gap-8 overflow-y-auto"
+>
+  <div class="flex flex-col gap-4 font-bold text-black/90 text-lg">
+    <div class="flex items-center gap-3">
+      <mat-icon>flight_takeoff</mat-icon> ASPSOS
+    </div>
+    <hr />
+  </div>
+  <div class="flex flex-col gap-8 flex-grow">
+    <div *ngFor="let item of navListItems">
+      <button
+        mat-raised-button
+        [color]="isActive(item.link) ? 'primary' : 'secondary'"
+        class="custom-button"
+        (click)="navigateScreens(item.link)"
+      >
+        <mat-icon class="button-icon">{{ item.icon }}</mat-icon>
+        <div class="button-text">{{ item.name }}</div>
+      </button>
+    </div>
+    <button
+      mat-raised-button
+      color="secondary"
+      class="custom-button"
+      (click)="logout()"
+    >
+      <mat-icon class="button-icon">exit_to_app</mat-icon>
+      <span class="button-text">Logout</span>
+    </button>
+  </div>
+</div>

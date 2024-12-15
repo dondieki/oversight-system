@@ -1,0 +1,55 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Update Inspection Information</h1>
+
+  <div mat-dialog-content>
+    <form [formGroup]="updateInspectionFormGroup" (ngSubmit)="updateInspectionInfo()">
+      <div class="w-full grid gap-4">
+        <mat-form-field>
+          <mat-label>Inspection Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="_deadline" />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+
+          <!-- Custom error for invalid deadline -->
+          <mat-error
+            *ngIf="
+              updateInspectionFormGroup
+                .get('_deadline')
+                ?.hasError('invalidDeadline')
+            "
+          >
+            {{ updateInspectionFormGroup.get('_deadline')?.errors?.['invalidDeadline'] }}
+          </mat-error>
+
+          <!-- Required error for deadline -->
+          <mat-error
+            *ngIf="
+              updateInspectionFormGroup.get('_deadline')?.hasError('required')
+            "
+          >
+            Inspection date is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="updateInspectionInfo()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Update
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

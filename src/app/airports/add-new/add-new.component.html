@@ -1,0 +1,508 @@
+<div class="w-full flex flex-col gap-4">
+  <h1 class="font-extrabold">Add Airport</h1>
+
+  <div class="flex items-center gap-2">
+    <a href="/#/airports" class="text-blue-500 underline">Airports</a>
+    >
+    <div>Add Airport</div>
+  </div>
+
+  <mat-vertical-stepper
+    orientation="vertical"
+    [linear]="isLinear"
+    #stepper
+    class="mt-4"
+  >
+    <mat-step [stepControl]="basicInfoFormGroup">
+      <ng-template matStepLabel>Basic Information</ng-template>
+      <form [formGroup]="basicInfoFormGroup" class="mt-4">
+        <div class="grid grid-cols-3 gap-16">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Full Name</mat-label>
+              <input
+                matInput
+                type="text"
+                placeholder="Jomo Kenyatta International Airport"
+                formControlName="name"
+                required
+              />
+              <mat-error
+                *ngIf="basicInfoFormGroup.get('name')?.hasError('required')"
+              >
+                Full Name is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                type="email"
+                placeholder="jkiakenya@gmail.com"
+                formControlName="email"
+                required
+              />
+              <mat-error
+                *ngIf="basicInfoFormGroup.get('email')?.hasError('required')"
+              >
+                Email is required.
+              </mat-error>
+              <mat-error
+                *ngIf="basicInfoFormGroup.get('email')?.hasError('email')"
+              >
+                Enter a valid email address.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="PhoneNumber w-full">
+              <mat-label>Phone Number</mat-label>
+              <input
+                matInput
+                placeholder="+254714060467"
+                formControlName="phoneNumber"
+                required
+                class="w-full"
+              />
+              <mat-error
+                *ngIf="
+                  basicInfoFormGroup.get('phoneNumber')?.hasError('required')
+                "
+              >
+                Phone number is required.
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  basicInfoFormGroup.get('phoneNumber')?.hasError('pattern')
+                "
+              >
+                Enter a valid phone number.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-16 mt-4">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Physical Address</mat-label>
+              <input
+                matInput
+                type="text"
+                placeholder="Nairobi"
+                formControlName="physicalAddress"
+                required
+              />
+              <mat-error
+                *ngIf="
+                  basicInfoFormGroup
+                    .get('physicalAddress')
+                    ?.hasError('required')
+                "
+              >
+                Physical Address is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Postal Address</mat-label>
+              <input
+                matInput
+                type="text"
+                placeholder="0100"
+                formControlName="postalAddress"
+                required
+              />
+              <mat-error
+                *ngIf="
+                  basicInfoFormGroup.get('postalAddress')?.hasError('required')
+                "
+              >
+                Postal Address is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Postal Code</mat-label>
+              <input
+                matInput
+                type="text"
+                placeholder="3736"
+                formControlName="postalCode"
+                required
+              />
+              <mat-error
+                *ngIf="
+                  basicInfoFormGroup.get('postalCode')?.hasError('required')
+                "
+              >
+                Postal Code is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            *ngIf="!isLoading"
+            (click)="submitAirportInformation()"
+          >
+            Next
+          </button>
+          <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+            Loading
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="runwayFormGroup">
+      <ng-template matStepLabel>Runway Information</ng-template>
+      <form [formGroup]="runwayFormGroup" class="mt-4">
+        <div class="grid grid-cols-3 gap-16">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Runway Number</mat-label>
+              <input
+                matInput
+                placeholder="18"
+                formControlName="number"
+                required
+              />
+              <mat-error
+                *ngIf="runwayFormGroup.get('number')?.hasError('required')"
+              >
+                Runway Number is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Width (m)</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="250"
+                formControlName="width"
+                required
+              />
+              <mat-error
+                *ngIf="runwayFormGroup.get('width')?.hasError('required')"
+              >
+                Width is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Length (m)</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="1500"
+                formControlName="length"
+                required
+              />
+              <mat-error
+                *ngIf="runwayFormGroup.get('length')?.hasError('required')"
+              >
+                Length is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-16 mt-4">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>In Service</mat-label>
+              <mat-select formControlName="inService" required>
+                <mat-option
+                  *ngFor="let val of booleanValues"
+                  [value]="val.value"
+                  >{{ val.name }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="runwayFormGroup.get('inService')?.hasError('required')"
+              >
+                In Service status is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Surface Type</mat-label>
+              <mat-select formControlName="surfaceType" required>
+                <mat-option
+                  *ngFor="let surfaceType of surfaceTypes"
+                  [value]="surfaceType"
+                  >{{ surfaceType }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="runwayFormGroup.get('surfaceType')?.hasError('required')"
+              >
+                Surface Type is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="w-full hover:cursor-pointer" (click)="submitRunway()">
+            <div>Add Runway</div>
+            <mat-icon class="font-bold text-green-700 mt-2 hover:cursor-pointer"
+              >add_circle_outline</mat-icon
+            >
+          </div>
+        </div>
+
+        <!-- Display saved runways -->
+        <div
+          class="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-3"
+          *ngIf="savedRunways.length > 0"
+        >
+          <div *ngFor="let runway of savedRunways; let i = index">
+            <div class="shadow-lg px-4 py-2">
+              <div class="flex gap-3">
+                <div class="text-base font-medium">Number:</div>
+                <div>{{ runway.number }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">Width:</div>
+                <div>{{ runway.width }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">Length:</div>
+                <div>{{ runway.length }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">Service Type:</div>
+                <div>{{ runway.surfaceType }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">In Service:</div>
+                <div *ngIf="runway.inService; else notInService">Yes</div>
+                <ng-template #notInService>No</ng-template>
+              </div>
+              <div
+                class="flex gap-3 mt-3 hover:cursor-pointer"
+                (click)="removeRunway(i)"
+              >
+                <div class="text-base font-medium">Delete</div>
+                <div><mat-icon>delete</mat-icon></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex items-center gap-4">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            *ngIf="!isLoading"
+            (click)="submitAllRunways()"
+          >
+            Submit & Continue
+          </button>
+          <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+            Loading...
+          </button>
+          <button
+            mat-raised-button
+            color="secondary"
+            type="submit"
+            *ngIf="!isLoading"
+            (click)="goForward()"
+          >
+            Skip for now
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="taxiwayFormGroup">
+      <ng-template matStepLabel>Taxiway Information</ng-template>
+      <form [formGroup]="taxiwayFormGroup" class="mt-4">
+        <div class="grid grid-cols-3 gap-16">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Taxiway Number</mat-label>
+              <input
+                matInput
+                placeholder="18"
+                formControlName="number"
+                required
+              />
+              <mat-error
+                *ngIf="taxiwayFormGroup.get('number')?.hasError('required')"
+              >
+                Taxiway Number is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Width (m)</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="250"
+                formControlName="width"
+                required
+              />
+              <mat-error
+                *ngIf="taxiwayFormGroup.get('width')?.hasError('required')"
+              >
+                Width is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Length (m)</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="1500"
+                formControlName="length"
+                required
+              />
+              <mat-error
+                *ngIf="taxiwayFormGroup.get('length')?.hasError('required')"
+              >
+                Length is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-16 mt-4">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>In Service</mat-label>
+              <mat-select formControlName="inService" required>
+                <mat-option
+                  *ngFor="let val of booleanValues"
+                  [value]="val.value"
+                  >{{ val.name }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="taxiwayFormGroup.get('inService')?.hasError('required')"
+              >
+                In Service status is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Surface Type</mat-label>
+              <mat-select formControlName="surfaceType" required>
+                <mat-option
+                  *ngFor="let surfaceType of surfaceTypes"
+                  [value]="surfaceType"
+                  >{{ surfaceType }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  taxiwayFormGroup.get('surfaceType')?.hasError('required')
+                "
+              >
+                Surface Type is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="w-full hover:cursor-pointer" (click)="submitTaxiway()">
+            <div>Add Taxiway</div>
+            <mat-icon class="font-bold text-green-700 mt-2 hover:cursor-pointer"
+              >add_circle_outline</mat-icon
+            >
+          </div>
+        </div>
+
+        <!-- Display saved taxiways -->
+        <div
+          class="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-3"
+          *ngIf="savedTaxiways.length > 0"
+        >
+          <div *ngFor="let taxiway of savedTaxiways; let i = index">
+            <div class="shadow-lg px-4 py-2">
+              <div class="flex gap-3">
+                <div class="text-base font-medium">Number:</div>
+                <div>{{ taxiway.number }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">Width:</div>
+                <div>{{ taxiway.width }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">Length:</div>
+                <div>{{ taxiway.length }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">Service Type:</div>
+                <div>{{ taxiway.surfaceType }}</div>
+              </div>
+              <div class="flex gap-3 mt-3">
+                <div class="text-base font-medium">In Service:</div>
+                <div *ngIf="taxiway.inService; else notInService">Yes</div>
+                <ng-template #notInService>No</ng-template>
+              </div>
+              <div
+                class="flex gap-3 mt-3 hover:cursor-pointer"
+                (click)="removeTaxiway(i)"
+              >
+                <div class="text-base font-medium">Delete</div>
+                <div><mat-icon>delete</mat-icon></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex items-center gap-4">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            *ngIf="!isLoading"
+            (click)="submitAllTaxiways()"
+          >
+            Submit
+          </button>
+          <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+            Loading...
+          </button>
+          <button
+            mat-raised-button
+            color="secondary"
+            type="submit"
+            *ngIf="!isLoading"
+            (click)="submitLater()"
+          >
+            Do this later
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>

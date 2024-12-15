@@ -1,0 +1,20 @@
+.custom-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+  padding: 0.5rem 1rem; // Adjust padding as needed
+  gap: 1rem; // Space between the icon and text
+  box-sizing: border-box; // Ensures consistent padding handling
+}
+
+.button-icon {
+  font-size: 1.2rem; // Adjust icon size if necessary
+}
+
+.button-text {
+  font-size: 0.9rem; // Adjust text size if necessary
+  flex-grow: 1; // Ensures the text takes up available space
+  text-align: left; // Aligns text to the left
+}

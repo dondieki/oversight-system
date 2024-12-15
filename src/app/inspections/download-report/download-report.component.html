@@ -1,0 +1,82 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Download Inspections Report</h1>
+
+  <div mat-dialog-content>
+    <form [formGroup]="inspectionsReportFormGroup" (ngSubmit)="sendReport()">
+      <div class="w-full grid gap-4">
+        <mat-form-field class="Name w-full">
+          <mat-label>Email Address to send to</mat-label>
+          <input
+            matInput
+            placeholder=""
+            formControlName="sendTo"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              inspectionsReportFormGroup.get('sendTo')?.hasError('required')
+            "
+          >
+            Email is required.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Filter status:</mat-label>
+          <mat-select
+            formControlName="status"
+            required
+            (selectionChange)="filterStatus()"
+          >
+            <mat-option *ngFor="let status of statuses" [value]="status.value">
+              {{ status.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="
+              inspectionsReportFormGroup.get('status')?.hasError('required')
+            "
+          >
+            *This field is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter a date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input
+              matStartDate
+              formControlName="startDate"
+              placeholder="Start date"
+            />
+            <input
+              matEndDate
+              formControlName="endDate"
+              placeholder="End date"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="sendReport()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Download Report
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

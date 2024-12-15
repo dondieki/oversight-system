@@ -1,0 +1,87 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Add Airline</h1>
+
+  <div mat-dialog-content>
+    <form [formGroup]="addAirlineFormGroup" (ngSubmit)="addAirline()">
+      <div class="w-full grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <mat-form-field class="FirstName w-full">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required class="w-full" />
+          <mat-error
+            *ngIf="addAirlineFormGroup.get('name')?.hasError('required')"
+          >
+            Name is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="LastName w-full">
+          <mat-label>Number of Aircraft</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="numberOfAircraft"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              addAirlineFormGroup.get('numberOfAircraft')?.hasError('required')
+            "
+          >
+            Number of aircraft is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="PhoneNumber w-full">
+          <mat-label>Total Passengers</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="totalPassengers"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              addAirlineFormGroup.get('totalPassengers')?.hasError('required')
+            "
+          >
+            Total passengers is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="IdNumber w-full">
+          <mat-label>Routes Flown</mat-label>
+          <textarea
+            matInput
+            formControlName="routesFlown"
+            placeholder="Add many using comma separation (,)"
+            rows="5"
+            class="w-full"
+          ></textarea>
+          <mat-error
+            *ngIf="addAirlineFormGroup.get('routesFlown')?.hasError('required')"
+          >
+            Routes flown is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="addAirline()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Submit
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

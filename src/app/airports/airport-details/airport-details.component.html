@@ -1,0 +1,214 @@
+<div class="w-full flex flex-col gap-8">
+  <div class="text-2xl font-medium">Airport Information</div>
+
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a href="/#/airports" class="text-blue-500 underline">Airports</a>
+      >
+      <div>Details</div>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Airport Details">
+      <div class="mt-4 shadow-lg bg-white p-8">
+        <div
+          class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between"
+        >
+          <div class="font-medium text-base">Basic Information</div>
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="openEditAirportDialog(airport)"
+              *ngIf="!appService.isInspector()"
+            >
+              <mat-icon>edit</mat-icon> Edit
+            </button>
+            <!-- <button
+              mat-raised-button
+              color="primary"
+              class="lg:w-48"
+              *ngIf="!appService.isInspector()"
+            >
+              Download Report
+            </button> -->
+          </div>
+        </div>
+        <div class="border mt-4"></div>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Created On:</div>
+              <div class="text-sm">{{ airport?.createdAt | date }}</div>
+            </div>
+            <div class="flex gap-3 mt-4">
+              <div class="text-base font-medium">Name:</div>
+              <div class="text-sm">{{ airport?.name | titlecase }}</div>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Email:</div>
+              <div class="text-sm">{{ airport?.email }}</div>
+            </div>
+          </div>
+          <div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Phone Number:</div>
+              <div class="text-sm">{{ airport?.phoneNumber }}</div>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <div class="text-base font-medium">Location:</div>
+              <div class="text-sm">
+                P.O BOX {{ airport?.postalAddress }},
+                {{ airport?.physicalAddress }}, {{ airport?.postalCode }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Runways">
+      <div class="shadow-lg bg-white p-8">
+        <div class="w-full flex flex-col gap-4">
+          <h1 class="font-extrabold">Runways</h1>
+
+          <div
+            class="w-full flex flex-col md:flex-row justify-between md:items-center"
+          >
+            <div class="w-full md:w-72">
+              <app-search (search)="onSearch($event)"></app-search>
+            </div>
+            <div class="flex justify-end md:items-center gap-4">
+              <button
+                mat-raised-button
+                color="primary"
+                class="lg:w-48"
+                (click)="openAddRunwayDialog()"
+                *ngIf="!appService.isInspector()"
+              >
+                Add Runway
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 w-full" *ngIf="!isLoading">
+            <div>
+              <span class="font-medium">Total: </span
+              >{{ totalRunways }} runways(s)
+            </div>
+            <app-runways-table
+              [runways]="runways"
+              (runwayUpdated)="fetchRunwaysList(selectedAirportId)"
+            ></app-runways-table>
+          </div>
+
+          <div *ngIf="isLoading">
+            <!-- Loading Skeleton Placeholder -->
+            <table class="skeleton-table">
+              <thead>
+                <tr class="text-center">
+                  <th class="py-3 px-3 skeleton skeleton-text"></th>
+                  <th class="py-3 px-3 skeleton skeleton-text"></th>
+                  <th class="py-3 px-3 skeleton skeleton-text"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of [1, 2, 3, 4, 5]" class="text-center">
+                  <td class="skeleton skeleton-row"></td>
+                  <td class="skeleton skeleton-row"></td>
+                  <td class="skeleton skeleton-row"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <mat-paginator
+            [length]="totalRunways"
+            [pageSize]="pageSize"
+            (page)="onPageChange($event)"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Taxiways">
+      <div class="shadow-lg bg-white p-8">
+        <div class="w-full flex flex-col gap-4">
+          <h1 class="font-extrabold">Taxiways</h1>
+
+          <div
+            class="w-full flex flex-col md:flex-row justify-between md:items-center"
+          >
+            <div class="w-full md:w-72">
+              <app-search (search)="onTaxiwaySearch($event)"></app-search>
+            </div>
+            <div class="flex justify-end md:items-center gap-4">
+              <button
+                mat-raised-button
+                color="primary"
+                class="lg:w-48"
+                (click)="openAddTaxiwayDialog()"
+                *ngIf="!appService.isInspector()"
+              >
+                Add Taxiway
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 w-full" *ngIf="!isLoading">
+            <div>
+              <span class="font-medium">Total: </span
+              >{{ totalTaxiways }} taxiway(s)
+            </div>
+            <app-taxiways-table
+              [taxiways]="taxiways"
+              (taxiwayUpdated)="fetchTaxiwaysList(selectedAirportId)"
+            ></app-taxiways-table>
+          </div>
+
+          <div *ngIf="isLoading">
+            <!-- Loading Skeleton Placeholder -->
+            <table class="skeleton-table">
+              <thead>
+                <tr class="text-center">
+                  <th class="py-3 px-3 skeleton skeleton-text"></th>
+                  <th class="py-3 px-3 skeleton skeleton-text"></th>
+                  <th class="py-3 px-3 skeleton skeleton-text"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of [1, 2, 3, 4, 5]" class="text-center">
+                  <td class="skeleton skeleton-row"></td>
+                  <td class="skeleton skeleton-row"></td>
+                  <td class="skeleton skeleton-row"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <mat-paginator
+            [length]="totalTaxiways"
+            [pageSize]="taxiwayPageSize"
+            (page)="onTaxiwayPageChange($event)"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Inspections">
+      <app-inspections
+        [entity]="entity"
+        [entityId]="selectedAirportId"
+      ></app-inspections>
+    </mat-tab>
+
+    <mat-tab label="Issues">
+      <app-issues [entity]="entity" [entityId]="selectedAirportId"></app-issues>
+    </mat-tab>
+  </mat-tab-group>
+</div>

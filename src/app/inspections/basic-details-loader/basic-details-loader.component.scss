@@ -1,0 +1,36 @@
+.loader {
+  .animate-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .shadow-lg {
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-md {
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .loading-block {
+    background-color: #e2e8f0; // Tailwind gray-300
+    border-radius: 0.25rem;
+    height: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .small { width: 5rem; }
+  .medium { width: 10rem; }
+  .large { width: 20rem; }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+}

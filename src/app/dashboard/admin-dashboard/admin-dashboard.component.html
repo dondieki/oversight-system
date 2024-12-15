@@ -1,0 +1,63 @@
+<div class="flex flex-col gap-4">
+  <div class="text-sm font-medium">
+    Welcome back {{ appService?.getSessionUser()?.firstName ?? "" }},
+  </div>
+
+  <div class="font-bold text-lg underline">Dashboard</div>
+
+  <div class="flex gap-3">
+    <div class="w-2/3 flex flex-col gap-4">
+      <div class="grid grid-cols-4 gap-4">
+        <div class="border bg-white shadow-lg p-8 rounded">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-green-400">account_circle</mat-icon>
+            <div class="font-bold">Users</div>
+          </div>
+          <div class="border mt-4"></div>
+          <div class="mt-4 text-center font-medium">{{ allUsers }}</div>
+        </div>
+        <div class="border bg-white shadow-lg p-8 rounded">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-yellow-400">flight_takeoff</mat-icon>
+            <div class="font-bold">Airports</div>
+          </div>
+          <div class="border mt-4"></div>
+          <div class="mt-4 text-center font-medium">{{ airports }}</div>
+        </div>
+        <div class="border bg-white shadow-lg p-8 rounded">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-indigo-400">search</mat-icon>
+            <div class="font-bold">Inspections</div>
+          </div>
+          <div class="border mt-4"></div>
+          <div class="mt-4 text-center font-medium">{{ inspections }}</div>
+        </div>
+        <div class="border bg-white shadow-lg p-8 rounded">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-red-400">report_problem</mat-icon>
+            <div class="font-bold">Issues</div>
+          </div>
+          <div class="border mt-4"></div>
+          <div class="mt-4 text-center font-medium">{{ issues }}</div>
+        </div>
+      </div>
+      <div class="gap-3">
+        <app-inspections-stats
+          [stats]="inspectionStats"
+          *ngIf="!isInspectionsStatsLoading"
+        ></app-inspections-stats>
+      </div>
+    </div>
+
+    <div class="w-1/3">
+      <app-users-stats
+        [stats]="userStats"
+        *ngIf="!isUserStatsLoading"
+      ></app-users-stats>
+      <app-issues-stats
+        [stats]="issueStats"
+        *ngIf="!isUserStatsLoading"
+      ></app-issues-stats>
+    </div>
+  </div>
+</div>

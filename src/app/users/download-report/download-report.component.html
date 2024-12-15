@@ -1,0 +1,57 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Download Users Report</h1>
+
+  <div mat-dialog-content>
+    <form [formGroup]="usersReportFormGroup" (ngSubmit)="sendReport()">
+      <div class="w-full grid gap-4">
+        <mat-form-field class="Name w-full">
+          <mat-label>Email Address to send to</mat-label>
+          <input
+            matInput
+            placeholder=""
+            formControlName="sendTo"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="usersReportFormGroup.get('sendTo')?.hasError('required')"
+          >
+            Email is required.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="Role w-full">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option
+              *ngFor="let role of roles"
+              [value]="role"
+              class="capitalize"
+              >{{ role }}</mat-option
+            >
+          </mat-select>
+          <mat-error
+            *ngIf="usersReportFormGroup.get('role')?.hasError('required')"
+          >
+            Role is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="sendReport()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Download Report
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

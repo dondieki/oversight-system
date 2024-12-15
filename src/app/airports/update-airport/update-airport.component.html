@@ -1,0 +1,149 @@
+<div class="py-8 px-4">
+  <h1 mat-dialog-title>Update Airport Information</h1>
+
+  <div mat-dialog-content>
+    <form
+      [formGroup]="updateAirportFormGroup"
+      (ngSubmit)="updateAirportInfo()"
+      class="mt-4 flex flex-col gap-4"
+    >
+      <div class="w-full grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <mat-form-field class="Name w-full">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            placeholder="John"
+            formControlName="name"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateAirportFormGroup.get('name')?.hasError('required')"
+          >
+            Name is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="Email w-full">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            placeholder="example@gmail.com"
+            formControlName="email"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="updateAirportFormGroup.get('email')?.hasError('required')"
+          >
+            Email is required.
+          </mat-error>
+          <mat-error
+            *ngIf="updateAirportFormGroup.get('email')?.hasError('email')"
+          >
+            Enter a valid email address.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="PhoneNumber w-full">
+          <mat-label>Phone Number</mat-label>
+          <input
+            matInput
+            placeholder="+254714060467"
+            formControlName="phoneNumber"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              updateAirportFormGroup.get('phoneNumber')?.hasError('required')
+            "
+          >
+            Phone number is required.
+          </mat-error>
+          <mat-error
+            *ngIf="
+              updateAirportFormGroup.get('phoneNumber')?.hasError('pattern')
+            "
+          >
+            Enter a valid phone number.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="physicalAddress w-full">
+          <mat-label>Physical Address</mat-label>
+          <input
+            matInput
+            placeholder="123456789"
+            formControlName="physicalAddress"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              updateAirportFormGroup
+                .get('physicalAddress')
+                ?.hasError('required')
+            "
+          >
+            Physical Address Address is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="postalAddress w-full">
+          <mat-label>Postal Address</mat-label>
+          <input
+            matInput
+            placeholder="123456789"
+            formControlName="postalAddress"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              updateAirportFormGroup
+                .get('physicalAddress')
+                ?.hasError('required')
+            "
+          >
+            Postal Address is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="physicalAddress w-full">
+          <mat-label>Postal Code</mat-label>
+          <input
+            matInput
+            placeholder="123456789"
+            formControlName="postalCode"
+            required
+            class="w-full"
+          />
+          <mat-error
+            *ngIf="
+              updateAirportFormGroup.get('postalCode')?.hasError('required')
+            "
+          >
+            Postal Code is required.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="updateAirportInfo()"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Update
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isLoading" disabled>
+          Loading...
+        </button>
+        <button mat-raised-button mat-dialog-close>Close</button>
+      </div>
+    </form>
+  </div>
+</div>

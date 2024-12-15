@@ -1,0 +1,248 @@
+<table
+  mat-table
+  [dataSource]="inspections"
+  class="mat-elevation-z8 w-full text-left"
+>
+  <!-- Created At Column -->
+  <ng-container matColumnDef="date">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Date
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let inspection"
+      class="py-3 px-6 border-b hover:cursor-pointer"
+      (click)="navigateDetails(inspection._id)"
+    >
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-medium">
+          Created at:
+          <span class="font-normal">{{ inspection.createdAt | date }}</span>
+        </span>
+        <span class="font-medium">
+          Updated at:
+          <span class="font-normal">{{ inspection.updatedAt | date }}</span>
+        </span>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- inspection Column -->
+  <ng-container matColumnDef="inspector">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Assigned Inspector
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let inspection"
+      class="py-3 px-6 border-b hover:cursor-pointer"
+      (click)="navigateDetails(inspection._id)"
+    >
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-medium">
+          Full Name:
+          <span class="font-normal"
+            >{{ inspection.inspectorId.firstName | titlecase }}
+            {{ inspection.inspectorId.lastName | titlecase }}
+          </span>
+        </span>
+        <span class="font-medium">
+          Email:
+          <span class="font-normal">{{ inspection.inspectorId.email }}</span>
+        </span>
+        <span class="font-medium">
+          Phone Number:
+          <span class="font-normal">{{
+            inspection.inspectorId.phoneNumber
+          }}</span>
+        </span>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- airport Column -->
+  <ng-container matColumnDef="airport">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      <div>Entity</div>
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let inspection"
+      class="py-3 px-6 border-b hover:cursor-pointer"
+      (click)="navigateDetails(inspection._id)"
+    >
+      <div class="flex flex-col gap-2 text-sm">
+        <!-- Display Airport Info -->
+        <ng-container *ngIf="inspection?.airportId; else airlineInfo">
+          <span class="font-medium">
+            Entity Type:
+            <span class="font-normal">Airport</span>
+          </span>
+          <span class="font-medium">
+            Full Name:
+            <span class="font-normal">{{
+              inspection.airportId.name | titlecase
+            }}</span>
+          </span>
+        </ng-container>
+
+        <!-- Display Airline Info -->
+        <ng-template #airlineInfo>
+          <ng-container *ngIf="inspection?.airlineId; else ansStationInfo">
+            <span class="font-medium">
+              Entity Type:
+              <span class="font-normal">Airline</span>
+            </span>
+            <span class="font-medium">
+              Full Name:
+              <span class="font-normal">{{
+                inspection.airlineId.name | titlecase
+              }}</span>
+            </span>
+          </ng-container>
+        </ng-template>
+
+        <!-- Display ANS Station Info -->
+        <ng-template #ansStationInfo>
+          <ng-container
+            *ngIf="inspection?.ansStationId; else maintenanceOrgInfo"
+          >
+            <span class="font-medium">
+              Entity Type:
+              <span class="font-normal">ANS Station</span>
+            </span>
+            <span class="font-medium">
+              Full Name:
+              <span class="font-normal">{{
+                inspection.ansStationId.name | titlecase
+              }}</span>
+            </span>
+          </ng-container>
+        </ng-template>
+
+        <!-- Display Maintenance Organization Info -->
+        <ng-template #maintenanceOrgInfo>
+          <ng-container *ngIf="inspection?.maintenanceOrgId">
+            <span class="font-medium">
+              Entity Type:
+              <span class="font-normal">Maintenance Org.</span>
+            </span>
+            <span class="font-medium">
+              Full Name:
+              <span class="font-normal">{{
+                inspection.maintenanceOrgId.name | titlecase
+              }}</span>
+            </span>
+          </ng-container>
+        </ng-template>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- deadline Column -->
+  <ng-container matColumnDef="deadline">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Deadline
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let inspection"
+      class="py-3 px-6 border-b hover:cursor-pointer"
+      (click)="navigateDetails(inspection._id)"
+    >
+      {{ inspection._deadline | date }}
+    </td>
+  </ng-container>
+
+  <!-- deadline Column -->
+  <ng-container matColumnDef="status">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Status
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let inspection"
+      class="py-3 px-6 border-b hover:cursor-pointer"
+      (click)="navigateDetails(inspection._id)"
+    >
+      <div
+        *ngIf="inspection.isComplete; else inComplete"
+        class="rounded-full p-2 bg-green-500 text-white text-center"
+      >
+        COMPLETE
+      </div>
+      <ng-template #inComplete>
+        <div class="rounded-full p-2 bg-yellow-500 text-white text-center">
+          PENDING
+        </div>
+      </ng-template>
+    </td>
+  </ng-container>
+
+  <!-- Actions Column - Only visible for non-inspectors -->
+  <ng-container matColumnDef="actions">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Actions
+    </th>
+    <td mat-cell *matCellDef="let inspection" class="py-3 px-6 border-b">
+      <ng-container *ngIf="!appService.isInspector()">
+        <div class="flex flex-row gap-2">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openEditDialog(inspection)"
+          >
+            <mat-icon>edit</mat-icon> Edit
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            *ngIf="appService.isAdmin()"
+            (click)="openDeleteDialog(inspection)"
+          >
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+        </div>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <!-- Header Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+  <!-- Data Rows -->
+  <ng-container *ngIf="inspections.length > 0; else noData">
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </ng-container>
+</table>
+
+<!-- No Data Found Row -->
+<ng-template #noData>
+  <tr>
+    <td colspan="5" class="text-left font-bold">No data found</td>
+  </tr>
+</ng-template>

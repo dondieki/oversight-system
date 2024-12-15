@@ -1,0 +1,7 @@
+<app-admin-dashboard
+  *ngIf="!appService.isInspector()"
+></app-admin-dashboard>
+
+<app-inspector-dashboard
+  *ngIf="appService.isInspector()"
+></app-inspector-dashboard>

@@ -1,0 +1,68 @@
+<div class="w-full flex flex-col gap-4">
+  <h1 class="font-extrabold">Airports</h1>
+
+  <div class="w-full flex flex-col md:flex-row justify-between md:items-center">
+    <div class="w-full md:w-72">
+      <app-search (search)="onSearch($event)"></app-search>
+    </div>
+    <div class="flex justify-end md:items-center gap-4">
+      <button
+        mat-raised-button
+        color="primary"
+        class="lg:w-48"
+        (click)="addAirport()"
+        *ngIf="!appService.isInspector()"
+      >
+        <mat-icon>add</mat-icon>
+        Add Airport
+      </button>
+      <!-- <button
+        mat-raised-button
+        color="primary"
+        class="lg:w-48"
+        *ngIf="!appService.isInspector()"
+      >
+        <mat-icon>download</mat-icon>
+        Download Report
+      </button> -->
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-3 w-full" *ngIf="!isLoading">
+    <div>
+      <span class="font-medium">Total: </span>{{ allAirports }} airport(s)
+    </div>
+    <app-airports-table
+      [airports]="airports"
+      (airportUpdated)="fetchAirportsList()"
+    ></app-airports-table>
+  </div>
+
+  <div *ngIf="isLoading">
+    <!-- Loading Skeleton Placeholder -->
+    <table class="skeleton-table">
+      <thead>
+        <tr class="text-center">
+          <th class="py-3 px-3 skeleton skeleton-text"></th>
+          <th class="py-3 px-3 skeleton skeleton-text"></th>
+          <th class="py-3 px-3 skeleton skeleton-text"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of [1, 2, 3, 4, 5]" class="text-center">
+          <td class="skeleton skeleton-row"></td>
+          <td class="skeleton skeleton-row"></td>
+          <td class="skeleton skeleton-row"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator
+    [length]="allAirports"
+    [pageSize]="pageSize"
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+</div>

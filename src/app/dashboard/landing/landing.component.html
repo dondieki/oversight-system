@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-4">
+  <div class="text-sm font-medium">Welcome back {{ user?.firstName ?? "" }},</div>
+
+  <div class="font-bold text-lg underline">Dashboard</div>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-white shadow-lg p-8 rounded w-64">
+      <div class="font-bold">Users Statistics</div>
+      <div class="border mt-4"></div>
+      <div class="mt-4">{{ users }}</div>
+    </div>
+    <div class="bg-white shadow-lg p-8 rounded w-64">
+      <div class="font-bold">Total Inspections</div>
+      <div class="border mt-4"></div>
+      <div class="mt-4">{{ inspections }}</div>
+    </div>
+    <div class="bg-white shadow-lg p-8 rounded w-64">
+      <div class="font-bold">Total Airports</div>
+      <div class="border mt-4"></div>
+      <div class="mt-4">{{ airports }}</div>
+    </div>
+  </div>
+</div>

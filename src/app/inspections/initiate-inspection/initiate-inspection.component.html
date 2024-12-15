@@ -1,0 +1,976 @@
+<div class="border shadow-lg bg-white px-24 py-16">
+  <div class="w-full text-cente font-bold text-xl">Initiate Inspection</div>
+
+  <mat-vertical-stepper
+    orientation="vertical"
+    [linear]="isLinear"
+    #stepper
+    class="mt-4"
+  >
+    <!-- Airport Inspection -->
+    <div *ngIf="inspection?.airportId">
+      <!-- Runway order status -->
+      <mat-step
+        [stepControl]="runwaysOrderStatusFormGroup"
+        *ngIf="runways && runways.length > 0"
+      >
+        <ng-template matStepLabel>Runways Status</ng-template>
+        <form
+          [formGroup]="runwaysOrderStatusFormGroup"
+          (ngSubmit)="validateRunwayOrderStatusInfo()"
+          class="mt-4"
+        >
+          <div class="flex flex-col gap-4">
+            <!-- In Order Selection -->
+            <mat-form-field class="w-full">
+              <mat-label>Are all the runways in order?</mat-label>
+              <mat-select formControlName="orderStatus" required>
+                <mat-option *ngFor="let val of booleanValues" [value]="val">
+                  {{ val }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  runwaysOrderStatusFormGroup
+                    .get('orderStatus')
+                    ?.hasError('required')
+                "
+              >
+                *This field is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              type="submit"
+              *ngIf="
+                taxiways.length > 0 ||
+                runwaysOrderStatusFormGroup.get('orderStatus')?.value == 'No'
+              "
+            >
+              Next
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="updateInspection()"
+              *ngIf="
+                taxiways.length < 1 &&
+                runwaysOrderStatusFormGroup.get('orderStatus')?.value == 'Yes'
+              "
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Runway Inspection -->
+      <mat-step
+        [stepControl]="runwayIssuesFormGroup"
+        *ngIf="runwaysOrderStatusFormGroup.get('orderStatus')?.value == 'No'"
+      >
+        <ng-template matStepLabel>Runways Issues</ng-template>
+        <form
+          [formGroup]="runwayIssuesFormGroup"
+          class="mt-4 flex flex-col gap-3"
+        >
+          <div class="grid gap-4">
+            <div class="grid lg:grid-cols-2 gap-3">
+              <mat-form-field class="w-full">
+                <mat-label>Select runway number that has an issue?</mat-label>
+                <mat-select formControlName="runway" required>
+                  <mat-option *ngFor="let runway of runways" [value]="runway">
+                    {{ runway.number }}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="
+                    runwayIssuesFormGroup.get('runway')?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>Which type of inspection was conducted?</mat-label>
+                <input
+                  matInput
+                  formControlName="inspectionType"
+                  required
+                  class="w-full"
+                />
+                <mat-error
+                  *ngIf="
+                    runwayIssuesFormGroup
+                      .get('inspectionType')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>What issue(s) did you find?</mat-label>
+                <textarea
+                  matInput
+                  formControlName="comment"
+                  placeholder="Enter your comments here"
+                  rows="5"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    runwayIssuesFormGroup.get('comment')?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-32"
+            (click)="saveRunwayIssue()"
+          >
+            Save Issue
+          </button>
+
+          <hr />
+
+          <!-- Displaying Saved Issues -->
+          <div
+            class="mt-4 grid lg:grid-cols-3 gap-3"
+            *ngIf="savedRunwayIssues.length > 0"
+          >
+            <div *ngFor="let issue of savedRunwayIssues; let i = index">
+              <div class="shadow-lg p-4 flex flex-col gap-3">
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Number:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.runway.number }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Issue:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.inspectionType }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Comment:</div>
+                    <div
+                      class="text-sm truncate max-w-[10rem] whitespace-nowrap overflow-ellipsis"
+                    >
+                      {{ issue.comment | slice : 0 : 68 }}
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <button
+                  mat-raised-button
+                  color="warn"
+                  class="w-32"
+                  (click)="removeRunwayIssue(i)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goBack()"
+            >
+              Previous
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="saveAndContinueRunwayIssue()"
+              class="w-32"
+              *ngIf="taxiways.length > 0"
+            >
+              Next
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitRunwayIssues()"
+              class="w-32"
+              *ngIf="taxiways.length < 1"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Taxiways order status -->
+      <mat-step
+        [stepControl]="taxiwaysOrderStatusFormGroup"
+        *ngIf="taxiways.length > 0"
+      >
+        <ng-template matStepLabel>Taxiways Status</ng-template>
+        <form [formGroup]="taxiwaysOrderStatusFormGroup" class="mt-4">
+          <div class="flex flex-col gap-4">
+            <!-- In Order Selection -->
+            <mat-form-field class="w-full">
+              <mat-label>Are all the taxiways in order?</mat-label>
+              <mat-select formControlName="orderStatus" required>
+                <mat-option *ngFor="let val of booleanValues" [value]="val">
+                  {{ val }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  taxiwaysOrderStatusFormGroup
+                    .get('orderStatus')
+                    ?.hasError('required')
+                "
+              >
+                *This field is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goBack()"
+            >
+              Previous
+            </button>
+            <button
+              *ngIf="
+                taxiwaysOrderStatusFormGroup.get('orderStatus')?.value === 'No'
+              "
+              mat-raised-button
+              color="primary"
+              (click)="goForward()"
+              class="w-32"
+            >
+              Next
+            </button>
+            <button
+              *ngIf="
+                taxiwaysOrderStatusFormGroup.get('orderStatus')?.value === 'Yes'
+              "
+              mat-raised-button
+              color="primary"
+              (click)="submitAllIssues()"
+              class="w-32"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Runway Inspection -->
+      <mat-step
+        [stepControl]="taxiwayIssuesFormGroup"
+        *ngIf="taxiwaysOrderStatusFormGroup.get('orderStatus')?.value == 'No'"
+      >
+        <ng-template matStepLabel>Taxiway Issues</ng-template>
+        <form
+          [formGroup]="taxiwayIssuesFormGroup"
+          class="mt-4 flex flex-col gap-3"
+        >
+          <div class="grid gap-4">
+            <div class="grid lg:grid-cols-2 gap-3">
+              <mat-form-field class="w-full">
+                <mat-label>Select taxiway number that has an issue?</mat-label>
+                <mat-select formControlName="taxiway" required>
+                  <mat-option
+                    *ngFor="let taxiway of taxiways"
+                    [value]="taxiway"
+                  >
+                    {{ taxiway.number }}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="
+                    taxiwayIssuesFormGroup.get('taxiway')?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>Which type of inspection was conducted?</mat-label>
+                <input
+                  matInput
+                  formControlName="inspectionType"
+                  required
+                  class="w-full"
+                />
+                <mat-error
+                  *ngIf="
+                    taxiwayIssuesFormGroup
+                      .get('inspectionType')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>What issue(s) did you find?</mat-label>
+                <textarea
+                  matInput
+                  formControlName="comment"
+                  placeholder="Enter your comments here"
+                  rows="5"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    taxiwayIssuesFormGroup.get('comment')?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-32"
+            (click)="saveTaxiwayIssue()"
+          >
+            Save Issue
+          </button>
+
+          <hr />
+
+          <!-- Displaying Saved Issues -->
+          <div
+            class="mt-4 grid lg:grid-cols-3 gap-3"
+            *ngIf="savedTaxiwayIssues.length > 0"
+          >
+            <div *ngFor="let issue of savedTaxiwayIssues; let i = index">
+              <div class="shadow-lg p-4 flex flex-col gap-3">
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Number:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.taxiway.number }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Issue:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.inspectionType }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Comment:</div>
+                    <div
+                      class="text-sm truncate max-w-[10rem] whitespace-nowrap overflow-ellipsis"
+                    >
+                      {{ issue.comment | slice : 0 : 68 }}
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <button
+                  mat-raised-button
+                  color="warn"
+                  class="w-32"
+                  (click)="removeTaxiwayIssue(i)"
+                >
+                  Remove taxiway
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goBack()"
+            >
+              Previous
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitAllIssues()"
+              class="w-32"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </div>
+
+    <!-- Airline Inspection -->
+    <div *ngIf="inspection?.airlineId">
+      <mat-step [stepControl]="airlineOrderStatusFormGroup">
+        <ng-template matStepLabel>Airline Status</ng-template>
+        <form [formGroup]="airlineOrderStatusFormGroup" class="mt-4">
+          <div class="flex flex-col gap-4">
+            <!-- In Order Selection -->
+            <mat-form-field class="w-full">
+              <mat-label>Is everything okay with the airline?</mat-label>
+              <mat-select formControlName="orderStatus" required>
+                <mat-option *ngFor="let val of booleanValues" [value]="val">
+                  {{ val }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  airlineOrderStatusFormGroup
+                    .get('orderStatus')
+                    ?.hasError('required')
+                "
+              >
+                *This field is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goForward()"
+              *ngIf="
+                airlineOrderStatusFormGroup.get('orderStatus')?.value == 'No'
+              "
+            >
+              Next
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="updateInspection()"
+              *ngIf="
+                airlineOrderStatusFormGroup.get('orderStatus')?.value == 'Yes'
+              "
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Airline Inspection -->
+      <mat-step
+        [stepControl]="airlineIssuesFormGroup"
+        *ngIf="airlineOrderStatusFormGroup.get('orderStatus')?.value == 'No'"
+      >
+        <ng-template matStepLabel>Airline Issues</ng-template>
+        <form
+          [formGroup]="airlineIssuesFormGroup"
+          class="mt-4 flex flex-col gap-3"
+        >
+          <div class="grid gap-4">
+            <div class="grid gap-3">
+              <mat-form-field class="w-full">
+                <mat-label>Which type of inspection was conducted?</mat-label>
+                <input
+                  matInput
+                  formControlName="inspectionType"
+                  required
+                  class="w-full"
+                />
+                <mat-error
+                  *ngIf="
+                    airlineIssuesFormGroup
+                      .get('inspectionType')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>What issue(s) did you find?</mat-label>
+                <textarea
+                  matInput
+                  formControlName="comment"
+                  placeholder="Enter your comments here"
+                  rows="5"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    airlineIssuesFormGroup.get('comment')?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-32"
+            (click)="saveAirlineIssue()"
+          >
+            Save Issue
+          </button>
+
+          <hr />
+
+          <!-- Displaying Saved Issues -->
+          <div
+            class="mt-4 grid lg:grid-cols-3 gap-3"
+            *ngIf="savedAirlineIssues.length > 0"
+          >
+            <div *ngFor="let issue of savedAirlineIssues; let i = index">
+              <div class="shadow-lg p-4 flex flex-col gap-3">
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Issue:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.inspectionType }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Comment:</div>
+                    <div
+                      class="text-sm truncate max-w-[10rem] whitespace-nowrap overflow-ellipsis"
+                    >
+                      {{ issue.comment | slice : 0 : 68 }}
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <button
+                  mat-raised-button
+                  color="warn"
+                  class="w-32"
+                  (click)="removeAirlineIssue(i)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goBack()"
+            >
+              Previous
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitAirlineIssues()"
+              class="w-32"
+              *ngIf="allAirlineIssues.length > 0"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </div>
+
+    <!-- ANS Station Inspection -->
+    <div *ngIf="inspection?.ansStationId">
+      <mat-step [stepControl]="ansStationOrderStatusFormGroup">
+        <ng-template matStepLabel>ANS Station Status</ng-template>
+        <form [formGroup]="ansStationOrderStatusFormGroup" class="mt-4">
+          <div class="flex flex-col gap-4">
+            <!-- In Order Selection -->
+            <mat-form-field class="w-full">
+              <mat-label>Is everything okay with the ANS Station?</mat-label>
+              <mat-select formControlName="orderStatus" required>
+                <mat-option *ngFor="let val of booleanValues" [value]="val">
+                  {{ val }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  ansStationOrderStatusFormGroup
+                    .get('orderStatus')
+                    ?.hasError('required')
+                "
+              >
+                *This field is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goForward()"
+              *ngIf="
+                ansStationOrderStatusFormGroup.get('orderStatus')?.value == 'No'
+              "
+            >
+              Next
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="updateInspection()"
+              *ngIf="
+                ansStationOrderStatusFormGroup.get('orderStatus')?.value ==
+                'Yes'
+              "
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- ansStationOrderStatusFormGroup Inspection -->
+      <mat-step
+        [stepControl]="ansStationIssuesFormGroup"
+        *ngIf="ansStationOrderStatusFormGroup.get('orderStatus')?.value == 'No'"
+      >
+        <ng-template matStepLabel>ANS Station Issues</ng-template>
+        <form
+          [formGroup]="ansStationIssuesFormGroup"
+          class="mt-4 flex flex-col gap-3"
+        >
+          <div class="grid gap-4">
+            <div class="grid gap-3">
+              <mat-form-field class="w-full">
+                <mat-label>Which type of inspection was conducted?</mat-label>
+                <input
+                  matInput
+                  formControlName="inspectionType"
+                  required
+                  class="w-full"
+                />
+                <mat-error
+                  *ngIf="
+                    ansStationIssuesFormGroup
+                      .get('inspectionType')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>What issue(s) did you find?</mat-label>
+                <textarea
+                  matInput
+                  formControlName="comment"
+                  placeholder="Enter your comments here"
+                  rows="5"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    ansStationIssuesFormGroup
+                      .get('comment')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-32"
+            (click)="saveAnsStationIssue()"
+          >
+            Save Issue
+          </button>
+
+          <hr />
+
+          <!-- Displaying Saved Issues -->
+          <div
+            class="mt-4 grid lg:grid-cols-3 gap-3"
+            *ngIf="savedANSStationIssues.length > 0"
+          >
+            <div *ngFor="let issue of savedANSStationIssues; let i = index">
+              <div class="shadow-lg p-4 flex flex-col gap-3">
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Issue:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.inspectionType }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Comment:</div>
+                    <div
+                      class="text-sm truncate max-w-[10rem] whitespace-nowrap overflow-ellipsis"
+                    >
+                      {{ issue.comment | slice : 0 : 68 }}
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <button
+                  mat-raised-button
+                  color="warn"
+                  class="w-32"
+                  (click)="removeAnsStationIssue(i)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goBack()"
+            >
+              Previous
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitAnsStationIssues()"
+              class="w-32"
+              *ngIf="allANSStationIssues.length > 0"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </div>
+
+    <!-- Maintenance Organizations Inspection -->
+    <div *ngIf="inspection?.maintenanceOrgId">
+      <mat-step [stepControl]="maintenanceOrgOrderStatusFormGroup">
+        <ng-template matStepLabel>Maintenance Organization Status</ng-template>
+        <form [formGroup]="maintenanceOrgOrderStatusFormGroup" class="mt-4">
+          <div class="flex flex-col gap-4">
+            <!-- In Order Selection -->
+            <mat-form-field class="w-full">
+              <mat-label
+                >Is everything okay with the maintenance
+                organization?</mat-label
+              >
+              <mat-select formControlName="orderStatus" required>
+                <mat-option *ngFor="let val of booleanValues" [value]="val">
+                  {{ val }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  maintenanceOrgOrderStatusFormGroup
+                    .get('orderStatus')
+                    ?.hasError('required')
+                "
+              >
+                *This field is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goForward()"
+              *ngIf="
+                maintenanceOrgOrderStatusFormGroup.get('orderStatus')?.value ==
+                'No'
+              "
+            >
+              Next
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="updateInspection()"
+              *ngIf="
+                maintenanceOrgOrderStatusFormGroup.get('orderStatus')?.value ==
+                'Yes'
+              "
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Maintenance Organizations Inspection -->
+      <mat-step
+        [stepControl]="maintenanceIssuesFormGroup"
+        *ngIf="
+          maintenanceOrgOrderStatusFormGroup.get('orderStatus')?.value == 'No'
+        "
+      >
+        <ng-template matStepLabel>Maintenance Organization Issues</ng-template>
+        <form
+          [formGroup]="maintenanceIssuesFormGroup"
+          class="mt-4 flex flex-col gap-3"
+        >
+          <div class="grid gap-4">
+            <div class="grid gap-3">
+              <mat-form-field class="w-full">
+                <mat-label>Which type of inspection was conducted?</mat-label>
+                <input
+                  matInput
+                  formControlName="inspectionType"
+                  required
+                  class="w-full"
+                />
+                <mat-error
+                  *ngIf="
+                    maintenanceIssuesFormGroup
+                      .get('inspectionType')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-full">
+                <mat-label>What issue(s) did you find?</mat-label>
+                <textarea
+                  matInput
+                  formControlName="comment"
+                  placeholder="Enter your comments here"
+                  rows="5"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    maintenanceIssuesFormGroup
+                      .get('comment')
+                      ?.hasError('required')
+                  "
+                >
+                  *This field is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Save button -->
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-32"
+            (click)="saveMaintenanceOrgIssue()"
+          >
+            Save Issue
+          </button>
+
+          <hr />
+
+          <!-- Displaying Saved Issues -->
+          <div
+            class="mt-4 grid lg:grid-cols-3 gap-3"
+            *ngIf="savedMaintenanceOrgIssues.length > 0"
+          >
+            <div *ngFor="let issue of savedMaintenanceOrgIssues; let i = index">
+              <div class="shadow-lg p-4 flex flex-col gap-3">
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Issue:</div>
+                    <div class="text-sm truncate max-w-[10rem]">
+                      {{ issue.inspectionType }}
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="text-base font-medium">Comment:</div>
+                    <div
+                      class="text-sm truncate max-w-[10rem] whitespace-nowrap overflow-ellipsis"
+                    >
+                      {{ issue.comment | slice : 0 : 68 }}
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <button
+                  mat-raised-button
+                  color="warn"
+                  class="w-32"
+                  (click)="removeMaintenanceOrgIssue(i)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="flex items-center gap-3">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-32"
+              (click)="goBack()"
+            >
+              Previous
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submitMaintenanceOrgStationIssues()"
+              class="w-32"
+              *ngIf="allMaintenanceOrgIssues.length > 0"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </div>
+  </mat-vertical-stepper>
+</div>

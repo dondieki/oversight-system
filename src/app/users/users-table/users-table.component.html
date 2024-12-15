@@ -1,0 +1,115 @@
+<table mat-table [dataSource]="users" class="mat-elevation-z8 w-full text-left">
+  <!-- Created At Column -->
+  <ng-container matColumnDef="date">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Date
+    </th>
+    <td mat-cell *matCellDef="let user" class="py-3 px-6 border-b">
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-medium">
+          Created at:
+          <span class="font-normal">{{ user._timestamp | date }}</span>
+        </span>
+        <span class="font-medium">
+          Updated at:
+          <span class="font-normal">{{ user._utimestamp | date }}</span>
+        </span>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- User Column -->
+  <ng-container matColumnDef="user">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      User
+    </th>
+    <td mat-cell *matCellDef="let user" class="py-3 px-6 border-b">
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-medium">
+          Full Name:
+          <span class="font-normal"
+            >{{ user.firstName | titlecase }}
+            {{ user.lastName | titlecase }}</span
+          >
+        </span>
+        <span class="font-medium">
+          Email: <span class="font-normal">{{ user.email }}</span>
+        </span>
+        <span class="font-medium">
+          Phone Number: <span class="font-normal">{{ user.phoneNumber }}</span>
+        </span>
+        <span class="font-medium">
+          ID Number: <span class="font-normal">{{ user.idNumber }}</span>
+        </span>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- Role Column -->
+  <ng-container matColumnDef="role">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Role
+    </th>
+    <td mat-cell *matCellDef="let user" class="py-3 px-6 border-b">
+      {{ user.role | titlecase }}
+    </td>
+  </ng-container>
+
+  <!-- Actions Column - Only visible for non-inspectors -->
+  <ng-container matColumnDef="actions">
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      class="text-left py-4 px-6 bg-gray-200"
+    >
+      Actions
+    </th>
+    <td mat-cell *matCellDef="let user" class="py-3 px-6 border-b">
+      <ng-container *ngIf="appService.isAdmin()">
+        <div class="flex flex-row gap-2">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openEditDialog(user)"
+          >
+            <mat-icon>edit</mat-icon> Edit
+          </button>
+          <!-- <button
+            mat-raised-button
+            color="warn"
+            (click)="openDeleteDialog(user)"
+          >
+            <mat-icon>delete</mat-icon> Delete
+          </button> -->
+        </div>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <!-- Header Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+  <!-- Data Rows -->
+  <ng-container *ngIf="users.length > 0; else noData">
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </ng-container>
+</table>
+
+<!-- No Data Found Row -->
+<ng-template #noData>
+  <tr>
+    <td colspan="5" class="text-left font-bold">No data found</td>
+  </tr>
+</ng-template>

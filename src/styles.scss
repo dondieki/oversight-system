@@ -1,0 +1,67 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.skeleton-text {
+  height: 20px;
+  width: 80%;
+  margin: 8px auto;
+}
+
+.skeleton-row {
+  height: 40px;
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.skeleton-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.skeleton-table th,
+.skeleton-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+
+table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.mat-header-cell {
+  background-color: #f3f4f6; /* Light gray for headers */
+  border-bottom: 2px solid #ddd; /* Solid bottom border for header */
+}
+
+.mat-cell {
+  border-bottom: 1px solid #ddd; /* Bottom border for cells */
+}
+
+.mat-elevation-z8 {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add shadow for better visibility */
+}
