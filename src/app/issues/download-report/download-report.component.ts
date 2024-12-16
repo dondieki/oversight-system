@@ -22,10 +22,12 @@ export class DownloadReportComponent {
     { label: 'Pending', value: false },
   ];
 
-  entities: { label: string; value: boolean | string }[] = [
+  entities: { label: string; value: string | string }[] = [
     { label: 'All', value: 'All' },
-    { label: 'Runway', value: true },
-    { label: 'Taxiway', value: false },
+    { label: 'Airport', value: 'airportId' },
+    { label: 'Airline', value: 'airlineId' },
+    { label: 'ANS Station', value: 'ansStationId' },
+    { label: 'Maintenance Organization', value: 'maintenanceOrgId' },
   ];
 
   constructor(
